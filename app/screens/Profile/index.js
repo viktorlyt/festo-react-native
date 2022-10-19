@@ -217,13 +217,7 @@ export default function Profile({ navigation, route }) {
         }
       }
     } catch (error) {
-      console.log('error ===', error);
-      // Toast.show(error.toString());
-      nToast.show({
-        type: 'error',
-        text1: 'Error 😔!',
-        text2: error.toString(),
-      });
+      console.log('Stories not found!')
     }
   }
 
