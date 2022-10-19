@@ -1,0 +1,172 @@
+import { StyleSheet, Dimensions, Platform } from 'react-native';
+import { BaseColors, FontFamily } from '@config/theme';
+
+const IOS = Platform.OS === 'ios';
+const styles = StyleSheet.create({
+  item: {
+    marginVertical: 10,
+    backgroundColor: BaseColors.white,
+    flexDirection: 'row',
+    borderRadius: 10,
+    width: Dimensions.get('window').width / 1.7,
+    borderColor: '#ddd',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: IOS ? 0.27 : 0.6,
+    shadowRadius: IOS ? 4.65 : 20,
+    elevation: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  profileTitleView: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  paidSheetImgview: {
+    position: 'absolute',
+    width: '100%',
+  },
+
+  paidImg: {
+    position: 'absolute',
+    color: 'white',
+    backgroundColor: BaseColors.primary,
+    paddingVertical: 5,
+    textAlign: 'center',
+    transform: [{ rotate: '-45deg' }],
+    fontFamily: FontFamily.bold,
+  },
+  // paidImg: {
+  //   top: 22,
+  //   position: 'absolute',
+  //   color: 'white',
+  //   backgroundColor: BaseColors.primary,
+  //   left: -60,
+  //   paddingVertical: 5,
+  //   width: '50%',
+  //   textAlign: 'center',
+  //   transform: [{ rotate: '-45deg' }],
+  //   fontFamily:FontFamily.bold,
+  // },
+  userImg: {
+    borderRadius: 10,
+  },
+  rowView: {
+    paddingVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileImg: {
+    width: 35,
+    height: 35,
+    borderRadius: 30,
+  },
+  userName: {
+    paddingLeft: 5,
+    fontSize: 12,
+    color: BaseColors.lightBlack,
+    fontWeight: 'bold',
+  },
+  Host: {
+    fontSize: 10,
+    paddingLeft: 5,
+    color: BaseColors.textGrey,
+  },
+  caption: {
+    fontSize: 14,
+    color: BaseColors.lightBlack,
+    fontWeight: 'bold',
+  },
+  addIcon: {
+    opacity: 0.7,
+  },
+  dateTxt: {
+    paddingLeft: 10,
+    flexDirection: 'row',
+    fontSize: 12,
+    color: BaseColors.lightBlack,
+    fontWeight: 'bold',
+  },
+  menuIconView: {
+    position: 'absolute',
+    flexDirection: 'row',
+    textAlign: 'center',
+    right: 5,
+    top: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 20,
+    backgroundColor: BaseColors.white,
+  },
+  locationTxt: {
+    fontSize: 8,
+    fontFamily: FontFamily.bold,
+    textAlign: 'center',
+    color: BaseColors.lightBlack,
+  },
+  bottomImg: {
+    width: 25,
+    height: 25,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: BaseColors.white,
+  },
+  uprImg: {
+    width: 25,
+    height: 25,
+    position: 'absolute',
+    left: 20,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: BaseColors.white,
+  },
+  usernameView: {
+    marginLeft: 12,
+    paddingVertical: 10,
+    flex: 1,
+  },
+  joiner: {
+    flexDirection: 'row',
+    flex: 1,
+    fontSize: 12,
+    color: BaseColors.lightBlack,
+    fontFamily: FontFamily.bold,
+  },
+  reviewView: {
+    marginLeft: 100,
+    paddingHorizontal: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  review: {
+    fontSize: 12,
+    paddingLeft: 5,
+    color: BaseColors.black,
+    fontFamily: FontFamily.bold,
+  },
+  btnTxtView: {
+    backgroundColor: BaseColors.lightRed,
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginVertical: 5,
+    marginHorizontal: 5,
+  },
+  btnTxt: {
+    fontSize: 14,
+    fontFamily: FontFamily.regular,
+    color: BaseColors.primary,
+  },
+  menuIconView1: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    // padding: 5,
+    paddingVertical: 5,
+    borderRadius: 5,
+    backgroundColor: BaseColors.white,
+  },
+});
+
+export default styles;

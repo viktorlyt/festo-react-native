@@ -1,0 +1,157 @@
+import { StyleSheet, Dimensions, Platform } from 'react-native';
+import { BaseColors, FontFamily } from '@config/theme';
+
+const IOS = Platform.OS === 'ios';
+export default StyleSheet.create({
+  container: {
+    paddingHorizontal: 15,
+    backgroundColor: BaseColors.white,
+    height: Dimensions.get('window').height,
+  },
+  titleImgView: {
+    paddingVertical: 25,
+  },
+  // datePickView: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   // borderWidth: 1,
+  //   // borderColor: BaseColors.textSecondary,
+  //   width: '100%',
+  //   opacity: 0.5,
+  //   borderRadius: 5,
+  //   height: 33,
+  //   marginLeft: -5,
+  //   marginTop: 10,
+  // },
+  Touchables: {
+    width: '80%',
+    height: 50,
+    borderRadius: 10,
+    color: '#F3492E',
+    backgroundColor: '#F3492E',
+    textAlign: 'center',
+    marginVertical: 30,
+    alignSelf: 'center',
+  },
+  genderFem: {
+    marginVertical: 20,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  Textt2: {
+    fontSize: 14,
+    paddingVertical: 5,
+    fontFamily: FontFamily.regular,
+    color: BaseColors.black,
+  },
+  genderInput: {
+    borderRadius: 10,
+    marginBottom: 10,
+    borderColor: BaseColors.borderColor,
+    borderWidth: 1,
+    paddingLeft: 10,
+    paddingVertical: 15,
+  },
+  genderFields: {
+    // fontFamily: FontFamily.regular,
+    // marginVertical: 20,
+    // textAlign: 'center',
+  },
+  texto: {
+    color: BaseColors.lightBlack,
+    textAlign: 'center',
+    fontFamily: FontFamily.bold,
+    fontSize: 20,
+    borderBottomColor: BaseColors.borderColor,
+    fontWeight: '700',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+  },
+  textInputView: {
+    marginTop: 25,
+    flexDirection: 'row',
+  },
+  HeadingTxt: {
+    paddingVertical: 25,
+    fontSize: 22,
+    textAlign: 'center',
+    fontFamily: FontFamily.bold,
+  },
+  Cprofile: {
+    width: 150,
+    height: 150,
+    borderWidth: 5,
+    borderColor: BaseColors.white,
+    borderRadius: 35,
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    backgroundColor: BaseColors.borderColor,
+    marginTop: 10,
+  },
+  avatarSty: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+    resizeMode: 'cover',
+  },
+  camBtnView: {
+    position: 'absolute',
+    backgroundColor: BaseColors.white,
+    padding: 8,
+    borderRadius: 8,
+    right: 10,
+    bottom: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  datePickStyle: {
+    justifyContent: 'center',
+    width: '100%',
+    borderColor: BaseColors.borderColor,
+  },
+  btnView: {
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  rowView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderBottomWidth: 0.5,
+    borderBottomColor: BaseColors.borderColor,
+  },
+  leftIcon: {
+    textAlign: 'center',
+    marginRight: 15,
+  },
+  modelTxt: {
+    textAlign: 'center',
+    color: BaseColors.textGrey,
+    fontSize: 16,
+  },
+
+  //profilesheet
+  modalRowView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderBottomWidth: 0.5,
+    borderBottomColor: BaseColors.borderColor,
+  },
+});

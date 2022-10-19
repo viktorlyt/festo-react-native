@@ -1,0 +1,36 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "source": {
+    "include": ["app", "README.MD"],
+    "includePattern": ".js$",
+    "excludePattern": "(^|\\/|\\\\)_",
+    "exclude": ["node_modules", "plugins", "app/libs"]
+  },
+  "plugins": [
+    "node_modules/better-docs",
+    "node_modules/better-docs/component",
+    "node_modules/better-docs/category"
+  ],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "search": true,
+    "default": {
+      "staticFiles": {
+        "include": ["./docsAssets"]
+      }
+    },
+    "better-docs": {
+      "css": "style.css",
+      "logo": "./images/logo.png"
+    }
+  },
+  "opts": {
+    "recurse": true,
+    "destination": "./docs",
+    "template": "./node_modules/better-docs"
+  }
+}
