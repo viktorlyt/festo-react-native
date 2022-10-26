@@ -112,7 +112,7 @@ function CreateParty({ navigation, route }) {
   const [endTimeErrTxt, setEndTimeErrTxt] = useState('');
 
   const [minMaxValues, setMinMaxValues] = useState({
-    min: 0,
+    min: 4,
     max: 100,
   });
 
@@ -155,7 +155,8 @@ function CreateParty({ navigation, route }) {
   const renderLabel = useCallback((value) => <Label text={value} />, []);
   const renderNotch = useCallback(() => <Notch />, []);
   const handleValueChange = useCallback((low, high) => {
-    setMinMaxValues({
+    console.log('low, high', low, high);
+    (low >= 0 && high > 0) && setMinMaxValues({
       min: low,
       max: high,
     });
@@ -742,7 +743,7 @@ function CreateParty({ navigation, route }) {
     setStartTime(IOS ? moment().format('hh:mm A') : new Date());
     setEndTime(IOS ? moment().format('hh:mm A') : new Date());
     setMinMaxValues({
-      min: 0,
+      min: 4,
       max: 100,
     });
     setCharges('');
@@ -1533,7 +1534,7 @@ function CreateParty({ navigation, route }) {
           </View>
           <View style={styles.mainView}>
             <Text style={styles.titleText}>
-              Select Age{' '}
+              {`Select Age `}
               <Text
                 style={{
                   color: BaseColors.primary,
@@ -1542,6 +1543,9 @@ function CreateParty({ navigation, route }) {
                 }}>
                 *
               </Text>
+              <Text style={{fontWeight: 'bold'}}>
+                {` (${minMaxValues?.min}-${minMaxValues?.max}) years`}
+              </Text>
             </Text>
             <View
               style={[
@@ -1549,21 +1553,22 @@ function CreateParty({ navigation, route }) {
                   marginTop: 5,
                 },
               ]}>
-              <RangeSlider
-                min={0}
-                max={100}
-                step={1}
-                low={minMaxValues?.min}
-                high={minMaxValues?.max}
-                floatingLabel
-                setRangeDisabled
-                renderThumb={renderThumb}
-                renderRail={renderRail}
-                renderRailSelected={renderRailSelected}
-                renderLabel={renderLabel}
-                renderNotch={renderNotch}
-                onTouchEnd={handleValueChange}
-              />
+              { (minMaxValues?.min >= 0 && minMaxValues?.max > 0) &&
+                <RangeSlider
+                  min={0}
+                  max={100}
+                  step={1}
+                  low={minMaxValues?.min}
+                  high={minMaxValues?.max}
+                  floatingLabel
+                  renderThumb={renderThumb}
+                  renderRail={renderRail}
+                  renderRailSelected={renderRailSelected}
+                  renderLabel={renderLabel}
+                  renderNotch={renderNotch}
+                  onValueChanged={handleValueChange}
+                />
+              }
             </View>
           </View>
           {isEdit ? null : (
