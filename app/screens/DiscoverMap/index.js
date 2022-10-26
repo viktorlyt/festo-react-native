@@ -100,7 +100,7 @@ export default function DiscoverMap({ navigation, route }) {
       currentLocation?.lat || 22.5645
     }&PartyDiscover[long]=${
       currentLocation?.long || 72.9289
-    }&PartyDiscover[is_map]=${1}&PartyDiscover[distance_km]=${filter}`;
+    }&PartyDiscover[is_map]=${0}&PartyDiscover[distance_km]=${filter}`;
     try {
       const response = await getApiData(
         `${BaseSetting.endpoints.listParty}${params}`,
@@ -111,11 +111,11 @@ export default function DiscoverMap({ navigation, route }) {
       if (response?.status) {
         if (
           !isEmpty(response.data) &&
-          isArray(response.data.data) &&
-          response.data.data.length > 0
+          isArray(response.data.rows) &&
+          response.data.rows.length > 0
         ) {
           setPageLoader(false);
-          setPartyData(response.data.data);
+          setPartyData(response.data.rows);
           setHeatMapData(response?.data?.heat_data || []);
         } else {
           setPageLoader(false);
@@ -201,6 +201,7 @@ export default function DiscoverMap({ navigation, route }) {
           {isArray(partyData) &&
             partyData?.length > 0 &&
             partyData?.map((item, index) => {
+              console.log('mapmap', item?.title)
               const party_image = item?.party_images[0];
               return (
                 <>
