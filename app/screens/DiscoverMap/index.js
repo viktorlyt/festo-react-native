@@ -201,7 +201,6 @@ export default function DiscoverMap({ navigation, route }) {
           {isArray(partyData) &&
             partyData?.length > 0 &&
             partyData?.map((item, index) => {
-              console.log('mapmap', item?.title)
               const party_image = item?.party_images[0];
               return (
                 <>
