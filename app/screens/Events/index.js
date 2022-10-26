@@ -12,7 +12,7 @@ import {
   Animated,
   Modal,
   KeyboardAvoidingView,
-  Platform,
+  Platform, Share,
 } from 'react-native';
 import styles from './styles';
 import Image from 'react-native-fast-image';
@@ -45,6 +45,7 @@ import AIcon from 'react-native-vector-icons/AntDesign';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import RenderHTML from 'react-native-render-html';
 import * as Animatable from 'react-native-animatable';
+import nToast from "react-native-toast-message";
 
 /**
  * Module  Events
@@ -754,7 +755,23 @@ export default function Events({ navigation, route }) {
   const renderComments = () => {
     return partyDetails?.is_blocked === 1 ? null : (
       <View style={{ paddingHorizontal: 5 }}>
-        <Text style={styles.commentsTxt}>Comments</Text>
+
+        <ShowBtns
+          show_pay_btn={(partyDetails.is_free) ? 0 : 1}
+          handleInviteFriends={() => {
+            getinvitedFrndList(partyDetails.id);
+            refInviteFriend.current.open();
+          }}
+          handleSendRequast={(id, hostId, type) => {
+            if (type === 'accept') {
+              requestToJoinParty(id, hostId, 'accept');
+            } else {
+              requestToJoinParty(id, hostId, 'cancel');
+            }
+          }}
+        />
+
+        <Text style={styles.commentsTxt}>Comments: </Text>
         {commentsListLoader ? (
           <View
             style={{
@@ -975,7 +992,7 @@ export default function Events({ navigation, route }) {
     ) : null;
   };
 
-  const renderImages = () => {
+  const RenderImages = () => {
     return (
       <View>
         {!_.isEmpty(partyDetails?.party_images) &&
@@ -992,10 +1009,10 @@ export default function Events({ navigation, route }) {
             showsHorizontalScrollIndicator={false}
           />
         ) : (
-          <Image
-            source={require('@assets/Images/cardImg.jpeg')}
-            style={styles.userImg}
-          />
+            <Image
+              source={require('@assets/Images/cardImg.jpeg')}
+              style={styles.userImg}
+            />
         )}
 
         <View
@@ -1032,6 +1049,25 @@ export default function Events({ navigation, route }) {
     );
   };
 
+  const onShare = async (link) => {
+    try {
+      const result = await Share.share({
+        message: link,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      // alert(error.message);
+    }
+  };
+
   const displayImages = ({ item, index }) => {
     return (
       <View
@@ -1048,34 +1084,107 @@ export default function Events({ navigation, route }) {
           }
           style={styles.userImg}
         />
-        {partyDetails?.is_free === 0 ? (
+          {isMe && (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('CreateParty', {
+                  data: partyDetails,
+                  isEdit: true,
+                });
+              }}
+              activeOpacity={0.6}
+              style={{...styles.editImgStyle, right: 55}}>
+              <ENIcon
+                style={styles.menuIcon}
+                name="edit"
+                size={16}
+                color={BaseColors.black}
+              />
+            </TouchableOpacity>
+          )}
+
+          { partyDetails?.is_free === 0 && partyDetails?.is_expired === 0 && (
+            <TouchableOpacity
+              onPress={() => {
+                onShare(`${BaseSetting.DOMAIN_SITE_PARTY}${partyDetails?.id}`)
+              } }
+              activeOpacity={0.6}
+              style={styles.editImgStyle}
+              >
+              <ENIcon
+                style={styles.menuIcon}
+                name="link"
+                size={20}
+                color={'red'}
+              />
+            </TouchableOpacity>
+          )}
+
+        {
           <View style={styles.paidSheetImgview}>
             <Text bold style={styles.paidImg}>
-              Paid
+              {(partyDetails?.is_free === 1) ? "Free" : (isMe ? 'My Party' : (partyDetails?.show_qr === 1 ? 'Paid' : `£${partyDetails?.price}`))}
             </Text>
           </View>
-        ) : null}
-        {isMe && Number(partyDetails?.is_editable) === 1 ? (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('CreateParty', {
-                data: partyDetails,
-                isEdit: true,
-              });
-            }}
-            activeOpacity={0.6}
-            style={styles.editImgStyle}>
-            <ENIcon
-              style={styles.menuIcon}
-              name="edit"
-              size={16}
-              color={BaseColors.black}
-            />
-          </TouchableOpacity>
-        ) : null}
+        }
       </View>
     );
   };
+
+  // get invited friends list api call
+  async function getinvitedFrndList(id, bool) {
+    // setInvitedFrndList([]);
+    const cPage =
+      invitedFrndList &&
+      invitedFrndList.pagination &&
+      invitedFrndList.pagination.currentPage
+        ? toNumber(invitedFrndList.pagination.currentPage)
+        : 0;
+
+    let page_no = 0;
+    if (bool === true) {
+      page_no = 1;
+    } else {
+      page_no = cPage + 1;
+    }
+    try {
+      const response = await getApiData(
+        `${BaseSetting.endpoints.inviteFriends}?party_id=${id}`,
+        'GET',
+      );
+      if (response.status) {
+        const obj = bool ? {} : cloneDeep(invitedFrndList);
+
+        const newListData =
+          response && response.data && response.data.rows
+            ? response.data.rows
+            : [];
+        const paginationDatas =
+          response && response.data && response.data.pagination
+            ? response.data.pagination
+            : {};
+
+        if (isArray(newListData)) {
+          if (isArray(obj.data) && obj.data.length > 0) {
+            obj.data = flattenDeep([...obj.data, newListData]);
+          } else {
+            obj.data = newListData;
+          }
+          obj.pagination = paginationDatas;
+        }
+        setInvitedFrndList(obj.data);
+      }
+      stopLoader();
+    } catch (error) {
+      // Toast.show(error.toString());
+      nToast.show({
+        type: 'error', // success / error
+        text1: 'Error ! 😔',
+        text2: error.toString(),
+      });
+      stopLoader();
+    }
+  }
 
   const renderUserPartiesDetails = () => {
     return fromDiscover ? (
@@ -1509,8 +1618,7 @@ export default function Events({ navigation, route }) {
     return partyDetails?.is_already_joined === 1 || isMe ? (
       <>
         <View style={styles.btnView1}>
-          {fromDiscover ? null : selected === 'Current' ||
-            selected === 'Joined' ||
+          {
             !isMe ? (
             Number(partyDetails?.show_qr) === 0 ||
             isEmpty(partyDetails?.qr_code) ? null : (
@@ -1547,7 +1655,7 @@ export default function Events({ navigation, route }) {
               }}
               type="primary"
               onPress={() => {
-                // handleInviteFriends(item);
+                handleInviteFriends(item);
                 setPageLOad(true);
                 getinvitedFrndList(partyDetails.id);
                 refInviteFriend.current.open();
@@ -1648,6 +1756,154 @@ export default function Events({ navigation, route }) {
     ) : null;
   };
 
+  const ShowBtns = ({ show_pay_btn, handleInviteFriends, handleSendRequast }) => {
+    return (
+      <View style={{height: 50}}>
+        { (!isMe && partyDetails?.show_qr === 1) ? (
+          <View style={styles.btnOne}>
+            <Button type="outlined" onPress={() => handleQR(partyDetails)}>
+              <MIcon
+                style={[styles.pinIcon, { marginRight: 10 }]}
+                name="qrcode"
+                size={18}
+                color={BaseColors.primary}
+              />
+              {'   Party QR'}
+            </Button>
+          </View>
+        ) : (!isMe && show_pay_btn === 1) ||
+        (Number(partyDetails?.is_expired) === 1 ||
+        Number(partyDetails.is_blocked) === 1 ||
+        selected === '' ? null : !isMe &&
+          Number(partyDetails?.is_already_joined) === 0) ? (
+          <View style={{ marginTop: 10 }}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={{
+                backgroundColor:
+                  partyDetails?.is_already_requested === 0
+                    ? BaseColors.primary
+                    : BaseColors.lightRed,
+                borderRadius: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+                borderWidth: partyDetails?.is_already_requested === 0 ? 0 : 1,
+                borderColor:
+                  partyDetails?.is_already_requested === 0
+                    ? BaseColors.white
+                    : BaseColors.primary,
+              }}
+              onPress={() => {
+                if (show_pay_btn === 1) {
+                  setPaymentModal(true);
+                } else if (partyDetails?.is_already_requested === 0) {
+                  handleSendRequast(partyDetails?.id, partyDetails?.host?.host_id, 'accept');
+                } else {
+                  handleSendRequast(partyDetails?.id, partyDetails?.host?.host_id, 'cancel');
+                }
+              }}>
+              {reqBtnLoader === partyDetails?.id ? (
+                <ActivityIndicator
+                  color={
+                    partyDetails?.is_already_requested === 0
+                      ? BaseColors.white
+                      : BaseColors.secondary
+                  }
+                  size="small"
+                  animating
+                />
+              ) : (
+                <Text
+                  style={{
+                    color:
+                      partyDetails?.is_already_requested === 0
+                        ? BaseColors.white
+                        : BaseColors.primary,
+                    fontSize: 16,
+                  }}>
+                  {show_pay_btn === 1
+                    ? 'Pay Now'
+                    : partyDetails?.is_already_requested === 0
+                      ? 'Request to Join'
+                      : 'Cancel Request'}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        ) : (isMe) ? (
+          <View style={styles.btnView1}>
+            {selected === 'Current' || selected === 'Joined' ? (
+              <View style={styles.btnOne}>
+                <Button type="outlined" onPress={() => handleQR(partyDetails)}>
+                  <MIcon
+                    style={[styles.pinIcon, { marginRight: 10 }]}
+                    name="qrcode"
+                    size={18}
+                    color={BaseColors.primary}
+                  />
+                  {'   Party QR'}
+                </Button>
+              </View>
+            ) : (
+              <View style={styles.btnOne}>
+                <Button type="outlined" onPress={() => handleQR(partyDetails)}>
+                  <MIcon
+                    style={[styles.pinIcon, { marginRight: 10 }]}
+                    name="qrcode"
+                    size={18}
+                    color={BaseColors.primary}
+                  />
+                  {'   Scan QR'}
+                </Button>
+              </View>
+            )}
+            <View
+              style={styles.btnOne}>
+              <Button
+                style={{
+                  borderWidth: 1,
+                  borderColor: BaseColors.primary,
+                }}
+                type="primary"
+                onPress={() => {
+                  handleInviteFriends(partyDetails);
+                }}>
+                {'Invite Friends'}
+              </Button>
+            </View>
+          </View>
+        ) : null}
+        {
+          isMe &&
+          selected === 'Created' &&
+          partyDetails.is_expired === 0 &&
+          partyDetails.is_started === 0 ? (
+            <View
+              style={[
+                styles.btnOne,
+                {
+                  flex: 1,
+                  marginTop: 8,
+                },
+              ]}>
+              <Button
+                style={{
+                  borderWidth: 1,
+                  borderColor: BaseColors.primary,
+                }}
+                type="primary"
+                onPress={() => {
+                  setCAlert(true);
+                }}>
+                {'Cancel Party'}
+              </Button>
+            </View>
+          ) : null}
+      </View>
+    )
+  }
+
   return (
     <>
       <Header
@@ -1686,7 +1942,7 @@ export default function Events({ navigation, route }) {
               }}
               keyboardShouldPersistTaps="handled">
               <View style={styles.firstView}>
-                {renderImages()}
+                <RenderImages />
 
                 {partyDetails.distance ? (
                   <View style={styles.menuIconView}>
@@ -1917,6 +2173,7 @@ export default function Events({ navigation, route }) {
                       marginTop: -30,
                     }}
                   />
+
                   <TouchableOpacity //22.5645, 72.9289
                     onPress={() => {
                       const url = `https://www.google.com/maps/dir/?api=1&destination=${partyDetails?.location_lat},${partyDetails?.location_lng}`;

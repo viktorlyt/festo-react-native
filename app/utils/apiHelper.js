@@ -14,8 +14,6 @@ export const getApiData = async (
   isFormData = true,
 ) => {
 
-    console.log('ya tut')
-    
   const authState = store?.getState() || {};
   const token = authState?.auth?.accessToken || '';
   const { uuid } = authState?.auth || '';
@@ -41,7 +39,6 @@ export const getApiData = async (
   }
 
   try {
-    console.log('ya tut')
     let response = await axios({
       method: method,
       url: BaseSetting.api + endpoint,
@@ -50,7 +47,7 @@ export const getApiData = async (
       data: isFormData ? query || {} : data || {},
     });
 
-    console.log('response ====', response);
+    // console.log('response ====', response);
     if (
       response?.data?.message ==
       'Your request was made with invalid credentials.'
@@ -71,7 +68,6 @@ export const getApiData = async (
     };
     return res;
   } catch (error) {
-    console.log('ya tut')
     // Bugsnag.notify(error, function (report) {
     //   report.metadata = {
     //     data: {

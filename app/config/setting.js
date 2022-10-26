@@ -23,6 +23,7 @@ const BaseSetting = {
   nHeight: Dimensions.get('window').height,
   timeOut: 30000,
   MAPS_API_CALL_KEY: 'AIzaSyAtRoN67EWe9K1x0vIoncr3DzjP9QYQzAQ',
+  DOMAIN_SITE_PARTY: "https://festoapp.co.uk/party/",
 
   endpoints: {
     login: 'user/sign-up',
@@ -62,7 +63,7 @@ const BaseSetting = {
     partyList: 'user/party',
     inviteFriends: 'party/invite-friend-list',
     invitedFrndList: 'party/invited-friends-list',
-    partyDetails: 'party/party-details',
+    partyDetails: 'party/party-info',
     requestToJoin: 'party/request-to-join',
     userParties: 'party/user-parties',
     commentList: 'party/comment-list',

@@ -52,6 +52,7 @@ import ChatMessage from '@screens/ChatMessage';
 import SideDrawer from './SideDrawer';
 import SeeAllPeople from '@screens/SeeAllPeople';
 import CreateParty from '@screens/CreateParty';
+import Tickets from '@screens/Tickets';
 
 const intitialNotificationState = {
   notification: null,
@@ -287,6 +288,11 @@ function App() {
           <Stack.Screen
             name="Party"
             component={BottomTabsNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Tickets"
+            component={Tickets}
             options={{ headerShown: false }}
           />
           <Stack.Screen

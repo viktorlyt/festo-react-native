@@ -41,7 +41,9 @@ import AIcon from "react-native-vector-icons/AntDesign";
  * @module  Party
  *
  */
-export default function Party({ navigation, route }) {
+export default function Tickets({ navigation, route }) {
+  const navigationBack = route?.params?.navigation || false;
+
   const { initialize } = socketActions;
   const dispatch = useDispatch();
 
@@ -69,6 +71,7 @@ export default function Party({ navigation, route }) {
   const [qrdetails, setQRDetails] = useState(false);
   const [qrScan, setQRscan] = useState(false);
   const [reqBtnLoader, setReqBtnLoader] = useState('');
+  const [defaultComment, setDefaultComment] = useState({});
 
   const optionsArray = [
     {
@@ -150,7 +153,7 @@ export default function Party({ navigation, route }) {
       locationinformation.lat ? locationinformation.lat : 22.6916
     }&PartyDiscover[long]=${
       locationinformation.long ? locationinformation.long : 72.8634
-    }&PartyDiscover[is_map]=${0}&PartyDiscover[distance_km]=${filter}`;
+    }&PartyDiscover[is_map]=${0}&PartyDiscover[distance_km]=${filter}&PartyDiscover[tickets]=${1}`;
     try {
       const response = await getApiData(
         `${BaseSetting.endpoints.listParty}${params}`,
@@ -739,7 +742,17 @@ export default function Party({ navigation, route }) {
   return (
     <>
       <Header
-        title="Discover"
+        title={'My tickets'}
+        leftIcon
+        leftIconName="arrowleft"
+        onBackPress={() => {
+          if (navigationBack) {
+            navigation.popToTop();
+          } else {
+            navigation.goBack();
+          }
+          setDefaultComment({});
+        }}
         rightIcon
         rightIconName="search"
         displayOptions

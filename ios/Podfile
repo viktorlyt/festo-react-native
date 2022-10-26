@@ -30,7 +30,7 @@ target 'festo' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
-  use_flipper!()
+  use_flipper!({ 'Flipper' => '0.149.0' })
 
   pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
 

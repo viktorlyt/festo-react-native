@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  Share
 } from 'react-native';
 import styles from './styles';
 import ENIcon from 'react-native-vector-icons/Entypo';
@@ -38,6 +39,7 @@ const PartyCard = (props) => {
     reqBtnLoader,
     renderPayment,
     reloadPage,
+    homePage = false
   } = props;
 
   const [optionVisible, setOptionVisible] = useState(false);
@@ -105,6 +107,25 @@ const PartyCard = (props) => {
     }
   }
 
+  const onShare = async (link) => {
+    try {
+      const result = await Share.share({
+        message: link,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      // alert(error.message);
+    }
+  };
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -160,9 +181,7 @@ const PartyCard = (props) => {
                 color={BaseColors.black}
               />
             </TouchableOpacity>
-          ) : selected === 'Created' &&
-            Number(item?.is_editable) === 1 &&
-            isMe ? (
+          ) : isMe ? (
             <TouchableOpacity
               onPress={handleEditParty}
               activeOpacity={0.6}
@@ -187,14 +206,47 @@ const PartyCard = (props) => {
               />
             </TouchableOpacity>
           ) : null}
+
+          { item?.is_free === 0 && item?.is_expired === 0 &&
+            (
+              <TouchableOpacity
+                onPress={() => {
+                  onShare(`${BaseSetting.DOMAIN_SITE_PARTY}${item?.id}`)
+                } }
+                activeOpacity={0.6}
+                style={{
+                  height: 30,
+                  width: 30,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  backgroundColor: 'rgba(255,255,255,0.70)',
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.6,
+                  shadowRadius: 20,
+                  elevation: 6,
+                  marginLeft: 5
+                }}>
+                <ENIcon
+                  style={styles.menuIcon}
+                  name="link"
+                  size={20}
+                  color={'red'}
+                />
+              </TouchableOpacity>
+            )
+          }
+
         </View>
-        {item?.is_free === 0 ? (
+        {
           <View style={styles.paidSheetImgview}>
             <Text bold style={styles.paidImg}>
-              Paid
+              {(item?.is_free === 1) ? "Free" : (isMe ? 'My Party' : (item?.show_qr === 1 ? 'Paid' : `£${item?.price}`))}
             </Text>
           </View>
-        ) : null}
+        }
+
         {!_.isEmpty(item?.interests) && _.isArray(item?.interests) ? (
           <View
             style={{
@@ -371,23 +423,30 @@ const PartyCard = (props) => {
           {item?.location}
         </Text>
       </View>
-      <View style={styles.rowView}>
-        <Text numberOfLines={3} style={[styles.details, { paddingTop: 15 }]}>
-          <Text style={{ fontFamily: FontFamily.bold }}>Note:-</Text>
-        </Text>
-      </View>
-      {isNull(item?.note) ? (
-        '  -'
-      ) : (
-        <View style={{ flex: 1, marginBottom: 10 }} numberOfLines={3}>
-          <RenderHTML source={{ html: item?.note }} />
+      {!homePage && item?.note &&
+        (<View style={{flex: 1, marginBottom: 10}} numberOfLines={3}>
+          <Text style={{fontWeight: 'bold', fontSize: 20}}>Note: </Text>
+          <RenderHTML source={{html: item?.note}} />
+        </View>)
+      }
+      { (!isMe && item?.show_qr === 1) ? (
+        <View style={styles.btnOne}>
+          <Button type="outlined" onPress={() => handleQR(item)}>
+            <MIcon
+              style={[styles.pinIcon, { marginRight: 10 }]}
+              name="qrcode"
+              size={18}
+              color={BaseColors.primary}
+            />
+            {'   Party QR'}
+          </Button>
         </View>
-      )}
-      {Number(item?.is_expired) === 1 ||
+      ) : (homePage && !isMe && item?.show_pay_btn === 1) ||
+      (Number(item?.is_expired) === 1 ||
       Number(item.is_blocked) === 1 ||
       selected === '' ? null : !isMe &&
         from &&
-        Number(item?.is_already_joined) === 0 ? (
+        Number(item?.is_already_joined) === 0) ? (
         <View style={{ marginTop: 10 }}>
           <TouchableOpacity
             activeOpacity={0.6}
@@ -437,13 +496,13 @@ const PartyCard = (props) => {
                 {item?.show_pay_btn === 1
                   ? 'Pay Now'
                   : item?.is_already_requested === 0
-                  ? 'Request to Join'
-                  : 'Cancel Request'}
+                    ? 'Request to Join'
+                    : 'Cancel Request'}
               </Text>
             )}
           </TouchableOpacity>
         </View>
-      ) : isMe ? (
+      ) : (isMe && !homePage) ? (
         <View style={styles.btnView}>
           {from ? null : selected === 'Current' || selected === 'Joined' ? (
             <View style={styles.btnOne}>
@@ -497,10 +556,12 @@ const PartyCard = (props) => {
           </View>
         </View>
       ) : null}
-      {isMe &&
-      selected === 'Created' &&
-      item.is_expired === 0 &&
-      item.is_started === 0 ? (
+      {
+        isMe &&
+          !homePage &&
+          selected === 'Created' &&
+          item.is_expired === 0 &&
+          item.is_started === 0 ? (
         <View
           style={[
             styles.btnOne,

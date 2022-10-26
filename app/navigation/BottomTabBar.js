@@ -10,6 +10,7 @@ import {
 import { isIPhoneX } from 'react-native-status-bar-height';
 import { BaseStyles, FontFamily } from '@config/theme';
 import ANIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
 
@@ -359,17 +360,17 @@ export default function BottomTabBar({ state, descriptors, navigation }) {
           <TouchableOpacity
             activeOpacity={0.5}
             onPress={() => {
-              console.log('Press 2');
-              setShowSearchAnimation(true);
-              // navigation.navigate('Search');
+              // setShowSearchAnimation(true);
+              navigation.navigate('Tickets');
             }}>
-            <ANIcon
-              name="search1"
+            <FontAwesome
+              name="ticket"
               style={[
                 styles.defaultIconSty,
                 {
                   color: BaseColors.white,
-                  fontSize: 26,
+                  fontSize: 40,
+                  padding: 13
                 },
               ]}
             />
