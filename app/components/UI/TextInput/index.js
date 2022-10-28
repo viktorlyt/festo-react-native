@@ -176,7 +176,7 @@ function CInput(props, ref) {
               <TouchableOpacity
                 delayLongPress={1000}
                 activeOpacity={0.8}
-                onLongPress={handlerLongClick}
+                // onLongPress={handlerLongClick}
                 style={styles.socialLoginViewStyle}>
                 {timesPressed ? (
                   <Image source={Images.india} style={styles.imgStyle} />
@@ -191,7 +191,7 @@ function CInput(props, ref) {
                     // borderLeftWidth: 1,
                     padding: 3,
                     fontSize: 14,
-                    paddingTop: IOS ? 10 : 3,
+                    paddingTop: IOS ? 2 : 3,
                     color: disabled
                       ? BaseColors.textSecondary
                       : focused

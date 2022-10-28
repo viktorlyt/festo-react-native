@@ -1861,10 +1861,6 @@ export default function Events({ navigation, route }) {
             <View
               style={styles.btnOne}>
               <Button
-                style={{
-                  borderWidth: 1,
-                  borderColor: BaseColors.primary,
-                }}
                 type="primary"
                 onPress={() => {
                   handleInviteFriends(partyDetails);
@@ -1879,25 +1875,18 @@ export default function Events({ navigation, route }) {
           selected === 'Created' &&
           partyDetails.is_expired === 0 &&
           partyDetails.is_started === 0 ? (
-            <View
-              style={[
-                styles.btnOne,
-                {
-                  flex: 1,
-                  marginTop: 8,
-                },
-              ]}>
-              <Button
-                style={{
-                  borderWidth: 1,
-                  borderColor: BaseColors.primary,
-                }}
-                type="primary"
-                onPress={() => {
-                  setCAlert(true);
-                }}>
-                {'Cancel Party'}
-              </Button>
+            <View style={[styles.btnView1, {}]}>
+              <View
+                style={styles.btnOne}
+              >
+                <Button
+                  type="primary"
+                  onPress={() => {
+                    setCAlert(true);
+                  }}>
+                  {'Cancel Party'}
+                </Button>
+              </View>
             </View>
           ) : null}
       </View>

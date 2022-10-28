@@ -112,7 +112,7 @@ export default StyleSheet.create({
     color: BaseColors.primary,
   },
   commentsTxt: {
-    marginTop: 20,
+    marginTop: 50,
     fontSize: 16,
     color: BaseColors.lightBlack,
     fontFamily: FontFamily.bold,
@@ -156,9 +156,13 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 40,
+    marginTop: 15
   },
   btnOne: {
     flex: 1,
+    height: 50,
+    paddingHorizontal: 5
   },
   pinIcon: {
     opacity: 0.3,

@@ -12,7 +12,7 @@ const BaseSetting = {
   displayName: 'festo',
   appVersionCode: '1',
   stripeKey:
-    'pk_test_51Kw3GOIyhcMj6DySJF9HS3yUiaMfJqFq87QAOMR9tthSf53j8kEgLyNuCCZVmjTvYbcBB36gUoIqaFYpgs0ELtxm001P7oUrtP',
+    'pk_test_51JOsR3DR0etMyhjsr1pf13WHSKb2XbxHdBL268VQ3Y1CpegCnz69azfZA6CSr7IPM02Afzej2jJN1veMMbd2d9Iy007bIHPh6A',
   // bugsnagApiKey: "",
   baseUrl,
   socketURL: 'http://134.122.111.37/', //LIVE URL

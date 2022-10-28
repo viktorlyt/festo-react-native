@@ -119,6 +119,7 @@ export default function Login({ navigation }) {
             countryCode={countryName}
             keyBoardType="number-pad"
             returnKeyType="done"
+            callingCode={'44'}
           />
         </View>
         <View style={styles.btmTxtView}>

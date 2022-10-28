@@ -84,6 +84,7 @@
     "react-native-render-html": "^6.3.4",
     "react-native-restart": "^0.0.22",
     "react-native-safe-area-context": "^3.2.0",
+    "react-native-safearea-height": "^1.0.2",
     "react-native-screens": "^3.3.0",
     "react-native-share": "^6.3.0",
     "react-native-simple-toast": "^1.1.3",

@@ -13,7 +13,7 @@ import EIcon from 'react-native-vector-icons/EvilIcons';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { getStatusBarHeight } from 'react-native-safearea-height';
 import { useTheme } from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import { Images } from '@config';

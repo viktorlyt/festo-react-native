@@ -12,7 +12,7 @@ import {
   Alert,
   RefreshControl, ActivityIndicator, Dimensions, Modal, Image,
 } from 'react-native';
-import {isArray, isEmpty, toNumber} from 'lodash';
+import {cloneDeep, flattenDeep, isArray, isEmpty, toNumber} from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { DiscoverListLoader } from '@components/ContentLoader';
 import { Header, DiscoverCardList, Text } from '@components';
@@ -35,6 +35,8 @@ import PartyCard from "../../components/UI/PartyCard";
 import MidModal from "../../components/UI/MidModal";
 import {Images} from "../../config/images";
 import AIcon from "react-native-vector-icons/AntDesign";
+import ListModal from "../../components/ListModal";
+import FormModal from "../../components/FormModal";
 
 /**
  * Module  DiscoverMap
@@ -72,6 +74,14 @@ export default function Tickets({ navigation, route }) {
   const [qrScan, setQRscan] = useState(false);
   const [reqBtnLoader, setReqBtnLoader] = useState('');
   const [defaultComment, setDefaultComment] = useState({});
+  const [selectedPartyId, setSelectedPartyId] = useState(0);
+  const [listLoader, setListLoader] = useState(true);
+  const [joinFriendsList, setJoinFriendsList] = useState([]);
+  const refJouinedSheet = useRef(null);
+  const [friendModal, setFriendModal] = useState(false);
+  const [buttonloader, setButtonLoader] = useState(false);
+  const [moreLoad, setMoreLoad] = useState(false);
+  const [invitedFrndList, setInvitedFrndList] = useState([]);
 
   const optionsArray = [
     {
@@ -343,78 +353,6 @@ export default function Tickets({ navigation, route }) {
     return <CNoData titleText="Oops 😥" descriptionText="Parties not found" />;
   };
 
-  const renderDiscoverMapListITem = ({ item, index }) => {
-    return !_.isEmpty(item.parties) && _.isArray(item.parties) ? (
-      <>
-        <View
-          style={
-            {
-              // marginTop: 120,
-            }
-          }>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-              paddingHorizontal: 10,
-            }}>
-            <Text bold>{item.interest_name}</Text>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={() => {
-                console.log('see all ');
-                navigation.navigate('DiscoverList', {
-                  data: item,
-                });
-              }}>
-              <Text color={'primary'}>{'See All'}</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView horizontal={false} showsHorizontalScrollIndicator={false}>
-            {item.parties.slice(0, 5).map((it, ii) => {
-              return (
-                <Animatable.View animation="fadeInLeft" style={{ flex: 1 }}>
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    style={{
-                      paddingEnd: 10,
-                      paddingStart: ii === 0 ? 10 : 0,
-                    }}
-                    onPress={() => {
-                      navigation.navigate('Events', {
-                        data: it,
-                        fromDiscover: true,
-                      });
-                    }}>
-                    <DiscoverCardList
-                      // allparties
-                      isPaid={true}
-                      userName={it.host.name}
-                      host="Host"
-                      hostPhoto={it.host.photo}
-                      event={it.title}
-                      date={`${it.at_date} - ${it.from_time}`}
-                      peoples={it.joining_user_count}
-                      distance={Math.round(Number(it.distance))}
-                      joiningUsers={it.joining_user}
-                      partyImage={
-                        !_.isUndefined(it.party_images[0]) &&
-                        it.party_images[0].image_url
-                      }
-                      is_free={it?.is_free}
-                    />
-                  </TouchableOpacity>
-                </Animatable.View>
-              );
-            })}
-          </ScrollView>
-        </View>
-      </>
-    ) : null;
-  };
-
   function renderFooterComponentLoader() {
     if (moreLoadParty) {
       return (
@@ -432,6 +370,210 @@ export default function Tickets({ navigation, route }) {
       return null;
     }
   }
+
+  function stopLoader() {
+    setPageLoader(false);
+    setRefreshLoader(false);
+    setPageLoader(false);
+    setListLoader(false);
+    setMoreLoadParty(false);
+  }
+
+// get invited friends list api call
+  async function getinvitedFrndList(id, bool) {
+    // setInvitedFrndList([]);
+    const cPage =
+      invitedFrndList &&
+      invitedFrndList.pagination &&
+      invitedFrndList.pagination.currentPage
+        ? toNumber(invitedFrndList.pagination.currentPage)
+        : 0;
+
+    let page_no = 0;
+    if (bool === true) {
+      page_no = 1;
+    } else {
+      page_no = cPage + 1;
+    }
+    try {
+      const response = await getApiData(
+        `${BaseSetting.endpoints.inviteFriends}?party_id=${id}`,
+        'GET',
+      );
+      if (response.status) {
+        const obj = bool ? {} : cloneDeep(invitedFrndList);
+
+        const newListData =
+          response && response.data && response.data.rows
+            ? response.data.rows
+            : [];
+        const paginationDatas =
+          response && response.data && response.data.pagination
+            ? response.data.pagination
+            : {};
+
+        if (isArray(newListData)) {
+          if (isArray(obj.data) && obj.data.length > 0) {
+            obj.data = flattenDeep([...obj.data, newListData]);
+          } else {
+            obj.data = newListData;
+          }
+          obj.pagination = paginationDatas;
+        }
+        setInvitedFrndList(obj.data);
+      }
+      stopLoader();
+    } catch (error) {
+      // Toast.show(error.toString());
+      nToast.show({
+        type: 'error', // success / error
+        text1: 'Error ! 😔',
+        text2: error.toString(),
+      });
+      stopLoader();
+    }
+  }
+
+  async function getMoreData(listdata, type) {
+    const cPage =
+      listdata && listdata.pagination && listdata.pagination.currentPage
+        ? toNumber(listdata.pagination.currentPage)
+        : 0;
+    const tPage =
+      listdata && listdata.pagination && listdata.pagination.totalPage
+        ? toNumber(listdata.pagination.totalPage)
+        : 0;
+    if (listdata.pagination.isMore === true && cPage < tPage) {
+      setMoreLoad(true);
+      if (type === 'invite-friends') {
+        setListLoader(true);
+        getinvitedFrndList(selectedPartyId, true);
+      } else if (type === 'invited-Friend-list') {
+        getJoinedList(selectedPartyId, true);
+      }
+    }
+  }
+
+
+  // this function for getJoinedList  list (15 friends)
+  async function getJoinedList(id, bool) {
+    setListLoader(true);
+    setJoinFriendsList([]);
+    const cPage =
+      joinFriendsList &&
+      joinFriendsList.pagination &&
+      joinFriendsList.pagination.currentPage
+        ? toNumber(joinFriendsList.pagination.currentPage)
+        : 0;
+
+    let page_no = 0;
+    if (bool === true) {
+      page_no = 1;
+    } else {
+      page_no = cPage + 1;
+    }
+    try {
+      const response = await getApiData(
+        `${BaseSetting.endpoints.invitedFrndList}?party_id=${id}`,
+        'GET',
+      );
+      if (response.status) {
+        const obj = bool ? {} : cloneDeep(joinFriendsList);
+
+        const newListData =
+          response && response.data && response.data.rows
+            ? response.data.rows
+            : [];
+        const paginationDatas =
+          response && response.data && response.data.pagination
+            ? response.data.pagination
+            : {};
+
+        if (isArray(newListData)) {
+          if (isArray(obj.data) && obj.data.length > 0) {
+            obj.data = flattenDeep([...obj.data, newListData]);
+          } else {
+            obj.data = newListData;
+          }
+          obj.pagination = paginationDatas;
+        }
+        setJoinFriendsList(obj?.data);
+      } else {
+        // Toast.show(response?.message);
+        nToast.show({
+          type: 'error', // success / error
+          text1: 'Error ! 😔',
+          text2: response?.message,
+        });
+      }
+      stopLoader();
+    } catch (error) {
+      // Toast.show(error.toString());
+      nToast.show({
+        type: 'error', // success / error
+        text1: 'Error ! 😔',
+        text2: error.toString(),
+      });
+      stopLoader();
+    }
+  }
+
+  function renderFooterComponent(listdata) {
+    if (moreLoad) {
+      return (
+        <View style={styles.loaderFooterView}>
+          <ActivityIndicator
+            size={'small'}
+            animating
+            color={BaseColors.primary}
+          />
+        </View>
+      );
+    } else if (isEmpty(listdata)) {
+      return null;
+    } else {
+      return <View style={styles.listFooterView} />;
+    }
+  }
+
+  // render modal list
+  const renderModalList = (listData, listRef, btnTitle, type) => {
+    return (
+      <ListModal
+        ListArray={listData}
+        pageLoad={listLoader}
+        btnTitle={btnTitle}
+        itemBtn={type}
+        buttonloader={buttonloader}
+        handleMainBtn={() => {
+          listRef.current.close();
+          setFriendModal(false);
+        }}
+        handleCancel={(item) => {
+          handleCancel(item.id, type);
+        }}
+        handleInvite={(item) => {
+          handleInvite(item.id);
+        }}
+        handleProfileClick={(item) => {
+          listRef?.current?.close();
+          setFriendModal(false);
+          navigation.push('Profile', {
+            from: 'friends',
+            id: item?.id,
+          });
+        }}
+        renderFooterComponent={() => renderFooterComponent(listData)}
+        refreshLoader={refreshLoader}
+        onRefresh={() => {
+          onRefresh(type);
+        }}
+        onEndReached={() => {
+          getMoreData(listData, type);
+        }}
+      />
+    );
+  };
 
   function renderPartiesCard({ item, index }) {
     return (
@@ -472,6 +614,13 @@ export default function Tickets({ navigation, route }) {
 
           reloadPage={() => {
             getPartyList();
+          }}
+
+          handleFriendsList={(e) => {
+            console.log('eeeeee',e.id)
+            setSelectedPartyId(e.id);
+            getJoinedList(e.id);
+            refJouinedSheet.current.open();
           }}
         />
       </View>
@@ -810,8 +959,21 @@ export default function Tickets({ navigation, route }) {
           source={require('../../assets/lottieFiles/confet.json')}
         />
       )}
+
       {qrdetails && <RenderQRModal/>}
+
       {renderPaymentModal()}
+
+      <FormModal
+        rbSheetRef={refJouinedSheet}
+        title={`${joinFriendsList?.length} People Joined`}>
+        {renderModalList(
+          joinFriendsList,
+          refJouinedSheet,
+          'Done',
+          'invited-Friend-list',
+        )}
+      </FormModal>
     </>
   );
 }
