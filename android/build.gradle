@@ -2,10 +2,10 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "29.0.3"
+        buildToolsVersion = "31.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 29
-        targetSdkVersion = 29
+        compileSdkVersion = 31
+        targetSdkVersion = 31
         ndkVersion = "20.1.5948944"
         googlePlayServicesVersion = "+"// default: "+"
         firebaseMessagingVersion = "21.1.0" // default: "21.1.0"
@@ -29,6 +29,7 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        // jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url("$rootDir/../node_modules/react-native/android")
@@ -42,5 +43,19 @@ allprojects {
         jcenter()
         maven { url 'https://www.jitpack.io' }
         maven { url 'https://maven.google.com' }
+    }
+}
+
+subprojects { project ->
+ afterEvaluate {
+        if (project.name.contains('react-native-dialogflow')) {
+            android {
+                compileSdkVersion rootProject.ext.compileSdkVersion
+                buildToolsVersion rootProject.ext.buildToolsVersion
+                defaultConfig {
+                    targetSdkVersion rootProject.ext.targetSdkVersion
+                }
+            }
+        }
     }
 }
