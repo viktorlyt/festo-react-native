@@ -44,6 +44,15 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
         maven { url 'https://maven.google.com' }
     }
+
+//    afterEvaluate {
+//        configurations.all {
+//            resolutionStrategy {
+//                force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
+//                force "com.facebook.react:hermes-engine:" + REACT_NATIVE_VERSION
+//            }
+//        }
+//    }
 }
 
 subprojects { project ->
