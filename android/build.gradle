@@ -2,10 +2,10 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "31.0.0"
+        buildToolsVersion = "33.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 31
-        targetSdkVersion = 31
+        compileSdkVersion = 33
+        targetSdkVersion = 33
         ndkVersion = "20.1.5948944"
         googlePlayServicesVersion = "+"// default: "+"
         firebaseMessagingVersion = "21.1.0" // default: "21.1.0"
@@ -24,6 +24,8 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+
+def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())
 
 allprojects {
     repositories {
@@ -45,14 +47,20 @@ allprojects {
         maven { url 'https://maven.google.com' }
     }
 
-//    afterEvaluate {
-//        configurations.all {
-//            resolutionStrategy {
-//                force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
-//                force "com.facebook.react:hermes-engine:" + REACT_NATIVE_VERSION
-//            }
+//    configurations.all {
+//        resolutionStrategy {
+//            force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
 //        }
 //    }
+
+    afterEvaluate {
+        configurations.all {
+            resolutionStrategy {
+                force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
+                force "com.facebook.react:hermes-engine:" + REACT_NATIVE_VERSION
+            }
+        }
+    }
 }
 
 subprojects { project ->

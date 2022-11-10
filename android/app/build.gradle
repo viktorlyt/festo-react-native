@@ -78,8 +78,8 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    enableHermes: true,  // clean and rebuild if changing
-//    deleteDebugFilesForVariant: { false },
+    enableHermes: false,  // clean and rebuild if changing
+    deleteDebugFilesForVariant: { false },
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -231,6 +231,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.facebook.soloader:soloader:0.10.4+'
     implementation 'com.android.support:multidex:2.0.1'
     implementation 'com.android.support:support-annotations:+'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
@@ -266,12 +267,14 @@ dependencies {
         implementation("com.facebook.react:hermes-engine:0.70.4") {
         exclude group: 'com.facebook.fbjni'
     }
-//        def hermesPath = "../../node_modules/hermes-engine/android/";
-//        debugImplementation files(hermesPath + "hermes-debug.aar")
-//        releaseImplementation files(hermesPath + "hermes-release.aar")
+        def hermesPath = "../../node_modules/hermes-engine/android/";
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {
         implementation jscFlavor
     }
+
+
 }
 
 // if (isNewArchitectureEnabled()) {
