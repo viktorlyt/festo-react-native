@@ -7,6 +7,7 @@
  */
 
 import React, { Component } from 'react';
+import {TextPropTypes} from 'deprecated-react-native-prop-types';
 import {
   StyleSheet,
   View,
@@ -150,12 +151,22 @@ const styles = StyleSheet.create({
 Toast.propTypes = {
   style: ViewPropTypes.style,
   position: PropTypes.oneOf(['top', 'center', 'bottom']),
-  textStyle: Text.propTypes.style,
+  textStyle: TextPropTypes.style,
   positionValue: PropTypes.number,
   fadeInDuration: PropTypes.number,
   fadeOutDuration: PropTypes.number,
   opacity: PropTypes.number,
 };
+
+//Toast.propTypes = {
+//  style: ViewPropTypes.style,
+//  position: PropTypes.oneOf(['top', 'center', 'bottom']),
+//  textStyle: Text.propTypes.style,
+//  positionValue: PropTypes.number,
+//  fadeInDuration: PropTypes.number,
+//  fadeOutDuration: PropTypes.number,
+//  opacity: PropTypes.number,
+//};
 
 Toast.defaultProps = {
   position: 'bottom',
