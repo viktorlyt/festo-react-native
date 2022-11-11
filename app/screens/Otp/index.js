@@ -36,8 +36,8 @@ function OtpScreen({ navigation, route }) {
   const countryCode = route?.params?.countryCode || '';
   const [btnLoader, setBtnLoader] = useState(false);
   const [loader, setLoader] = useState(false);
-  const [output, setOutput] = useState('');
-  const [timerCount, setTimer] = useState(60);
+  const [output, setOutput] = useState('1234');
+  const [timerCount, setTimer] = useState(20);
   const number = phone;
   const lastNum = number.slice(5, 10);
 
@@ -63,7 +63,7 @@ function OtpScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    setTimer(60);
+    setTimer(20);
   }, []);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ function OtpScreen({ navigation, route }) {
         data,
       );
       if (resp?.status) {
-        setTimer(60);
+        setTimer(20);
         setLoader(false);
         setOutput('');
         nToast.show({

@@ -98,7 +98,7 @@ export default function Login({ navigation }) {
               loginAction();
             }}
             onChange={(txt) => {
-              setPhoneNum(txt.trim().replaceAll(' ', ''));
+              setPhoneNum(txt.trim().split(' ').join(''));
               if (isValidPhoneNumber(txt, countryName)) {
                 setPhoneNumberError(false);
               } else {
