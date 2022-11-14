@@ -17,6 +17,7 @@
   "dependencies": {
     "@capacitor-community/firebase-analytics": "github:capacitor-community/firebase-analytics#feat/v4",
     "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/cli": "^9.3.2",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/datetimepicker": "^6.1.3",
     "@react-native-community/geolocation": "^2.0.2",
@@ -52,9 +53,10 @@
     "moment": "^2.29.1",
     "patch-package": "^6.5.0",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0",
+    "react": "18.1.0",
     "react-content-loader": "^6.2.0",
-    "react-native": "^0.70.4",
+    "react-devtools": "^4.26.1",
+    "react-native": "0.70.5",
     "react-native-actionsheet": "^2.4.2",
     "react-native-animatable": "^1.3.3",
     "react-native-appearance": "^0.3.4",
@@ -64,6 +66,7 @@
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-country-picker-modal": "^2.0.0",
     "react-native-datepicker": "^1.7.2",
+    "react-native-dev-menu": "^4.1.1",
     "react-native-elements": "^3.4.2",
     "react-native-event-listeners": "^1.0.7",
     "react-native-fast-image": "^8.3.4",
@@ -135,5 +138,8 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "overrides": {
+    "react-devtools-core": "~4.25.0"
   }
 }

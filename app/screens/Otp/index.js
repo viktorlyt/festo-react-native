@@ -36,7 +36,7 @@ function OtpScreen({ navigation, route }) {
   const countryCode = route?.params?.countryCode || '';
   const [btnLoader, setBtnLoader] = useState(false);
   const [loader, setLoader] = useState(false);
-  const [output, setOutput] = useState('1234');
+  const [output, setOutput] = useState('');
   const [timerCount, setTimer] = useState(20);
   const number = phone;
   const lastNum = number.slice(5, 10);
@@ -121,15 +121,17 @@ function OtpScreen({ navigation, route }) {
         text2: error.toString(),
       });
       // Toast.show(error.toString());
-      console.log('ERRRRR 123', error);
+      console.log('ERRRRR ', error);
       setLoader(false);
     }
   }
   //API Call for OTPVerify
   async function OTPVerify(code) {
+    console.log(code);
     try {
       setBtnLoader(true);
       let otp;
+      console.log(code);
       if (code.length === 4) {
         otp = output.length === 4 && output ? output : code;
       }
@@ -137,7 +139,8 @@ function OtpScreen({ navigation, route }) {
       const data = {
         'VerifyOtpForm[phone]': phone,
         'VerifyOtpForm[otp]': otp,
-        'VerifyOtpForm[uuid]': fcmToken,
+        'VerifyOtpForm[uuid]': '1234',
+        // 'VerifyOtpForm[uuid]': fcmToken,
       };
       const resp = await getApiData(
         BaseSetting.endpoints.OtpVerify,
@@ -175,7 +178,7 @@ function OtpScreen({ navigation, route }) {
         text2: error.toString() || '',
       });
       // Toast.show(error.toString());
-      console.log('ERRRRR', error);
+      console.log('ERRRRR123', error);
       setBtnLoader(false);
     }
   }
@@ -261,6 +264,7 @@ function OtpScreen({ navigation, route }) {
                   : 'secondary'
               }
               onPress={
+                // console.log('output', output)
                 (_.isEmpty(output) && output?.length !== 4) || btnLoader
                   ? null
                   : () => OTPVerify()

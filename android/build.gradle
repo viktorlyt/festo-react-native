@@ -7,7 +7,8 @@ buildscript {
         compileSdkVersion = 33
         targetSdkVersion = 33
         ndkVersion = "20.1.5948944"
-        googlePlayServicesVersion = "+"// default: "+"
+//         googlePlayServicesVersion = "+"// default: "+"
+//         googlePlayServicesVersion = "+" as googlePlayServicesVersion = "17.0.0"
         firebaseMessagingVersion = "21.1.0" // default: "21.1.0"
     }
     repositories {
