@@ -959,12 +959,12 @@ export default function Party({ navigation, route }) {
   return (
     <>
       <Header
-        title="Discover"
+        title="Discover 🔍"
         rightIcon
         rightIconName="search"
-        displayOptions
-        optionsArray={optionsArray}
-        filterIcon
+        // displayOptions
+        // optionsArray={optionsArray}
+        // filterIcon
         onRightAction={() => {
           navigation.navigate('Search');
         }}

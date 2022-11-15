@@ -307,11 +307,11 @@ export default function DiscoverMap({ navigation, route }) {
   return (
     <>
       <Header
-        title="Party"
+        title="Party 🌐"
         rightIcon
-        displayOptions
-        optionsArray={optionsArray}
-        filterIcon
+        // displayOptions
+        // optionsArray={optionsArray}
+        // filterIcon
         rightIconName="search"
         onRightAction={() => {
           navigation.navigate('Search');
