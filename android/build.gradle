@@ -7,9 +7,10 @@ buildscript {
         compileSdkVersion = 33
         targetSdkVersion = 33
         ndkVersion = "20.1.5948944"
-//         googlePlayServicesVersion = "+"// default: "+"
+        // ndkVersion = "25.1.8937393"
+        googlePlayServicesVersion = "17.0.0"// default: "+"
 //         googlePlayServicesVersion = "+" as googlePlayServicesVersion = "17.0.0"
-        firebaseMessagingVersion = "21.1.0" // default: "21.1.0"
+        firebaseMessagingVersion = "23.1.0" // default: "21.1.0"
     }
     repositories {
         google()
@@ -19,7 +20,7 @@ buildscript {
     dependencies {
         // classpath("com.android.tools.build:gradle:3.5.4")
         classpath("com.android.tools.build:gradle:4.1.0")
-        classpath 'com.google.gms:google-services:4.3.8'
+        classpath('com.google.gms:google-services:4.3.13')
         // classpath "com.bugsnag:bugsnag-android-gradle-plugin:5.+"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
